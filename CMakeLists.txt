@@ -10,16 +10,52 @@ SET(CMAKE_SYSTEM_VERSION 1)
 SET(Demo_VERSION_MAJOR 1)
 SET(Demo_VERSION_MINOR 0)
 
+IF ("$ENV{QNX_HOST}" STREQUAL "")
+    MESSAGE(FATAL_ERROR "QNX_HOST environment variable not set")
+ENDIF()
+
+IF ("$ENV{QNX_TARGET}" STREQUAL "")
+    MESSAGE(FATAL_ERROR "QNX_TARGET environment variable not set")
+ENDIF()
+
+OPTION(BOARD_OR_VM "determine where to run(BOARD set ON)" ON)
+IF (${BOARD_OR_VM})
+    MESSAGE(STATUS "BOARD_OR_VM IS ON, run on BOARD")
+    SET(ARCH gcc_ntoaarch64le)
+    SET(QCC_NTOARCH aarch64le)
+ELSE()
+    MESSAGE(STATUS "BOARD_OR_VM IS OFF, run on VM")
+    SET(ARCH gcc_ntox86_64)
+    SET(QCC_NTOARCH x86_64)
+ENDIF()
+
+SET(QNX_HOST "$ENV{QNX_HOST}")
+SET(QNX_TARGET "$ENV{QNX_TARGET}")
+
+MESSAGE(STATUS "QNX_HOST:${QNX_HOST}")
+MESSAGE(STATUS "QNX_TARGET:${QNX_TARGET}")
+MESSAGE(STATUS "ARCH:${ARCH}")
+MESSAGE(STATUS "QCC_NTOARCH:${QCC_NTOARCH}")
 
 #************************************************
 # set compiler and compiler options
 #************************************************
-
-SET(CMAKE_C_COMPILER "gcc")
+# for gcc
+#************************************************
+#SET(CMAKE_C_COMPILER "gcc")
+#SET(CMAKE_C_COMPILER_TARGET "${ARCH}")
+#SET(CMAKE_CXX_COMPILER "g++")
+#SET(CMAKE_CXX_COMPILER_TARGET "${ARCH}")
+#SET(CMAKE_LINKER   "ld" )
+#************************************************
+# for qcc
+#************************************************
+SET(CMAKE_C_COMPILER "${QNX_HOST}/usr/bin/qcc")
 SET(CMAKE_C_COMPILER_TARGET "${ARCH}")
-SET(CMAKE_CXX_COMPILER "g++")
+SET(CMAKE_CXX_COMPILER "${QNX_HOST}/usr/bin/qcc")
 SET(CMAKE_CXX_COMPILER_TARGET "${ARCH}")
-SET(CMAKE_LINKER   "ld" )
+SET(CMAKE_LINKER       "${QNX_HOST}/usr/bin/nto${QCC_NTOARCH}-ld"     CACHE PATH "QNX linker program" FORCE)
+#************************************************
 SET(CMAKE_C_FLAGS "$ENV{CMAKE_C_FLAGS} -Wall -g -fPIC -fmessage-length=0 -fno-builtin -O0")
 SET(CMAKE_CXX_FLAGS "$ENV{CMAKE_CXX_FLAGS} -Wall -g -std=c++11 -fPIC -D_GLIBCXX_USE_CXX11_ABI=0 -U__STRICT_ANSI__ -lang-c++")
 
@@ -45,9 +81,9 @@ MESSAGE(STATUS "TARGET_SO_NAME:${TARGET_SO_NAME}")
 MESSAGE(STATUS "PROJECT_SOURCE_DIR:${PROJECT_SOURCE_DIR}")
 MESSAGE(STATUS "PROJECT_BINARY_DIR:${PROJECT_BINARY_DIR}")
 
-SET(QCAR_INC_BS ${PROJECT_SOURCE_DIR}/include)
-SET(QCAR_INC_DUMP_FILE ${PROJECT_SOURCE_DIR}/include/PositionSender/ScreenPosition)
-SET(QCAR_INC_MSG_FILE ${PROJECT_SOURCE_DIR}/include/PositionSender/Message)
+SET(QCAR_INC_BS "${PROJECT_SOURCE_DIR}/include")
+SET(QCAR_INC_DUMP_FILE "${PROJECT_SOURCE_DIR}/include/PositionSender/ScreenPosition")
+SET(QCAR_INC_MSG_FILE "${PROJECT_SOURCE_DIR}/include/PositionSender/Message")
 #SET(QCAR_INC_BUSI ${PROJECT_SOURCE_DIR}/include/mybusi)
 SET(BOOST_INC_PATH "/home/wm/code/boost-libs/include")
 SET(QCAR_INCLUDE_PATH
