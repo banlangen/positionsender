@@ -56,8 +56,8 @@ SET(CMAKE_CXX_COMPILER "${QNX_HOST}/usr/bin/qcc")
 SET(CMAKE_CXX_COMPILER_TARGET "${ARCH}")
 SET(CMAKE_LINKER       "${QNX_HOST}/usr/bin/nto${QCC_NTOARCH}-ld"     CACHE PATH "QNX linker program" FORCE)
 #************************************************
-SET(CMAKE_C_FLAGS "$ENV{CMAKE_C_FLAGS} -Wall -g -fPIC -fmessage-length=0 -fno-builtin -O0")
-SET(CMAKE_CXX_FLAGS "$ENV{CMAKE_CXX_FLAGS} -Wall -g -std=c++11 -fPIC -D_GLIBCXX_USE_CXX11_ABI=0 -U__STRICT_ANSI__ -lang-c++")
+SET(CMAKE_C_FLAGS "$ENV{CMAKE_C_FLAGS} -Wall -g -fPIC -fprofe -ftest-cover -fmessage-length=0 -fno-builtin -O0")
+SET(CMAKE_CXX_FLAGS "$ENV{CMAKE_CXX_FLAGS} -Wall -g -std=c++11 -fprofile -ftest-coverage -fPIC -D_GLIBCXX_USE_CXX11_ABI=0 -U__STRICT_ANSI__ -lang-c++")
 
 MESSAGE(STATUS "CMAKE_C_COMPILER ${CMAKE_C_COMPILER}")
 MESSAGE(STATUS "CMAKE_CXX_COMPILER ${CMAKE_CXX_COMPILER}")
@@ -132,11 +132,14 @@ MESSAGE(STATUS "FRAME_WORK_LIB:" ${FRAME_WORK_LIB})
 SET(LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/${PLAT_FORM}/lib/")
 MESSAGE(STATUS "LIBRARY_OUTPUT_PATH " ${LIBRARY_OUTPUT_PATH})
 ADD_LIBRARY(${TARGET_SO_NAME} SHARED ${PS_SRCS})
+target_compile_options(${TARGET_SO_NAME} PRIVATE -Wall -g -std=c++11 -fprofile -ftest-coverage -fPIC -D_GLIBCXX_USE_CXX11_ABI=0 -U__STRICT_ANSI__ -lang-c++)
 
 SET(EXECUTABLE_OUTPUT_PATH "${PROJECT_BINARY_DIR}/${PLAT_FORM}/bin/")
 MESSAGE(STATUS "EXECUTABLE_OUTPUT_PATH " ${EXECUTABLE_OUTPUT_PATH})
+#target_compile_options(${TARGET_NAME} -ftest-coverage -fprofile)
 ADD_EXECUTABLE(${TARGET_NAME} ${SOURCE_FILES})
-TARGET_LINK_LIBRARIES(${TARGET_NAME} -Wl,--start-group ${PROJECT_SUB_DIR_LIBS} ${FRAME_WORK_LIB} ${PROJECT_SHARED_LIB} -Wl,--end-group)
+target_compile_options(${TARGET_NAME} PRIVATE -Wall -g -std=c++11 -fprofile -ftest-coverage -fPIC -D_GLIBCXX_USE_CXX11_ABI=0 -U__STRICT_ANSI__ -lang-c++)
+TARGET_LINK_LIBRARIES(${TARGET_NAME} -Wl,--start-group ${PROJECT_SUB_DIR_LIBS} ${FRAME_WORK_LIB} ${PROJECT_SHARED_LIB} gcov -Wl,--end-group)
 
 #************************************************
 # headers out put
