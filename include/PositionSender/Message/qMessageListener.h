@@ -1,10 +1,13 @@
 #ifndef _Q_MESSAGE_LISTENER
 #define _Q_MESSAGE_LISTENER
 #include "messageListener.h"
+#include "msgInfo.h"
 
 class qMessageListener : public MessageListener {
 public:
-    void attach();
-    bool sendMessage();
+    int m_tpChID = 0;
+    bool connect();
+    bool sendMessage(MessageInfo &);
+    bool getConnectionStatus();
 };
 #endif

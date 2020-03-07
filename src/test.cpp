@@ -42,7 +42,7 @@ class AddFixture {
 boost::shared_ptr<AddFixture> aFixture (new AddFixture);
 
 BOOST_AUTO_TEST_SUITE(suite)
-BOOST_FIXTURE_TEST_CASE(record_screen_position_dump, AddFixture) {
+BOOST_FIXTURE_TEST_CASE(record_screen_position_dump, AddFixture, * label("recordtest")) {
     BOOST_TEST_MESSAGE("Running RecordTest");
     BOOST_TEST_MESSAGE("  recording position 1");
     ScreenPosition sp; 

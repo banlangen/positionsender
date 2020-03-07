@@ -47,6 +47,7 @@ std::ofstream& operator<<(std::ofstream &os, const ScreenPosition &dump) {
                     (lexical_cast<std::string>(dump.y));
     }
     os << join(v, ",") << std::endl; 
+    return os;
 }
 
 std::ifstream& operator>>(std::ifstream &ifs, ScreenPosition &sposition) {

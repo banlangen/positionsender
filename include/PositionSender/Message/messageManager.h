@@ -12,7 +12,7 @@ public:
     }
     ~MessageManager() {};
     void createMessage(int/*screen_event*/, int/*touch_id*/, float/*x position*/, float/*y position*/);
-    MsgInfo& getMessage();
+    MessageInfo& getMessage();
     bool sendMessage(); 
     void requestListener(std::shared_ptr<MessageListener> &mListener);
     
@@ -24,6 +24,6 @@ private:
     //MessageManager(MessageManager const &);
     //void operator=(MessageManager const &); 
     std::shared_ptr<MessageListener> m_listener;
-    MsgInfo m_info;
+    MessageInfo m_info;
 };
 #endif

@@ -1,11 +1,13 @@
 #ifndef _MESSAGE_LISTENER_H
 #define _MESSAGE_LISTENER_H
+#include "msgInfo.h"
+
 class MessageListener {
 public:
-    virtual void attach();
-    virtual bool sendMessage();
-    bool getAttachStatus();
+    virtual bool connect();
+    virtual bool sendMessage(MessageInfo &);
+    bool getConnectionStatus();
 protected:
-    bool isAttached = false;
+    bool m_isConnected = false;
 };
 #endif
