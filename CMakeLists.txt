@@ -10,13 +10,22 @@ SET(CMAKE_SYSTEM_VERSION 1)
 SET(Demo_VERSION_MAJOR 1)
 SET(Demo_VERSION_MINOR 0)
 
-IF ("$ENV{QNX_HOST}" STREQUAL "")
-    MESSAGE(FATAL_ERROR "QNX_HOST environment variable not set")
+#IF ("$ENV{QNX_HOST}" STREQUAL "")
+#    MESSAGE(FATAL_ERROR "QNX_HOST environment variable not set")
+#ENDIF()
+
+IF ((${COMPILER} STREQUAL "qcc") AND ("$ENV{QNX_TARGET}" STREQUAL "")) 
+    MESSAGE(FATAL_ERROR "QNX_TARGET enviroment variable not set")
+ELSEIF(${COMPILER} STREQUAL "qcc") 
+    SET(QNX_HOST "$ENV{QNX_HOST}")
+    SET(QNX_TARGET "$ENV{QNX_TARGET}")
+ELSEIF("$ENV{QNX_TARGET}" STRGREATER "")
+    MESSAGE(FATAL_ERROR "QNX_TARGET eviroment variable must not be set with gcc compiler")
 ENDIF()
 
-IF ("$ENV{QNX_TARGET}" STREQUAL "")
-    MESSAGE(FATAL_ERROR "QNX_TARGET environment variable not set")
-ENDIF()
+#IF ("$ENV{QNX_TARGET}" STREQUAL "")
+#    MESSAGE(FATAL_ERROR "QNX_TARGET environment variable not set")
+#ENDIF()
 
 OPTION(BOARD_OR_VM "determine where to run(BOARD set ON)" ON)
 IF (${BOARD_OR_VM})
@@ -29,8 +38,6 @@ ELSE()
     SET(QCC_NTOARCH x86_64)
 ENDIF()
 
-SET(QNX_HOST "$ENV{QNX_HOST}")
-SET(QNX_TARGET "$ENV{QNX_TARGET}")
 
 MESSAGE(STATUS "QNX_HOST:${QNX_HOST}")
 MESSAGE(STATUS "QNX_TARGET:${QNX_TARGET}")
@@ -43,7 +50,6 @@ MESSAGE(STATUS "QCC_NTOARCH:${QCC_NTOARCH}")
 # for gcc
 #************************************************
 IF (${COMPILER} STREQUAL "gcc")
-    MESSAGE(STATUS "Compiler IF ${COMPILER}")
     SET(CMAKE_C_COMPILER "gcc")
     SET(CMAKE_C_COMPILER_TARGET "${ARCH}")
     SET(CMAKE_CXX_COMPILER "g++")
@@ -53,7 +59,6 @@ IF (${COMPILER} STREQUAL "gcc")
 # for qcc
 #***********************************************
 ELSE()
-    MESSAGE(STATUS "Compiler ELSE ${COMPILER}")
     SET(CMAKE_C_COMPILER "${QNX_HOST}/usr/bin/qcc")
     SET(CMAKE_C_COMPILER_TARGET "${ARCH}")
     SET(CMAKE_CXX_COMPILER "${QNX_HOST}/usr/bin/qcc")
@@ -88,16 +93,24 @@ MESSAGE(STATUS "PROJECT_BINARY_DIR:${PROJECT_BINARY_DIR}")
 SET(QCAR_INC_BS "${PROJECT_SOURCE_DIR}/include")
 SET(QCAR_INC_DUMP_FILE "${PROJECT_SOURCE_DIR}/include/PositionSender/ScreenPosition")
 SET(QCAR_INC_MSG_FILE "${PROJECT_SOURCE_DIR}/include/PositionSender/Message")
+IF (${COMPILER} STREQUAL "gcc")
+    SET(QCAR_INC_PLT_FILE "${PROJECT_SOURCE_DIR}/include/PositionSender/Platform/Linux")
+ELSE()
+    SET(QCAR_INC_PLT_FILE "${PROJECT_SOURCE_DIR}/include/PositionSender/Platform/QNX")
+ENDIF()
 #SET(QCAR_INC_BUSI ${PROJECT_SOURCE_DIR}/include/mybusi)
 SET(BOOST_INC_PATH "/home/wm/code/boost-libs/include")
 SET(QCAR_INCLUDE_PATH
     ${QCAR_INC_DUMP_FILE}
     ${QCAR_INC_BS}
     ${QCAR_INC_MSG_FILE}
+    ${QCAR_INC_PLT_FILE}
     ${BOOST_INC_PATH})
 MESSAGE(STATUS "QCAR_INCLUDE_PATH: ${QCAR_INCLUDE_PATH}")
-SET(QNX_HOST_INCLUDE ${QNX_HOST}/usr/lib/gcc/x86_64-pc-nto-qnx7.0.0/5.4.0/include)
-SET(QNX_TARGET_INCLUDE ${QNX_TARGET}/usr/include ${QNX_TARGET}/usr/include/c++/v1)
+IF (${COMPILER} STREQUAL "qcc")
+    SET(QNX_HOST_INCLUDE ${QNX_HOST}/usr/lib/gcc/x86_64-pc-nto-qnx7.0.0/5.4.0/include)
+    SET(QNX_TARGET_INCLUDE ${QNX_TARGET}/usr/include ${QNX_TARGET}/usr/include/c++/v1)
+ENDIF()
 INCLUDE_DIRECTORIES(${QCAR_INCLUDE_PATH} ${QNX_HOST_INCLUDE} ${QNX_TARGET_INCLUDE})
 
 #************************************************
@@ -107,8 +120,17 @@ INCLUDE_DIRECTORIES(${QCAR_INCLUDE_PATH} ${QNX_HOST_INCLUDE} ${QNX_TARGET_INCLUD
 
 # used for shared so
 #AUX_SOURCE_DIRECTORY(${PROJCT_SOURCE_DIR}/src/ScreenPosition DUMP_SRCS)
-FILE(GLOB_RECURSE PS_SRCS "${PROJECT_SOURCE_DIR}/src/PositionSender/*.cpp")
-
+FILE(GLOB_RECURSE MS_SRCS "${PROJECT_SOURCE_DIR}/src/PositionSender/Message/*.cpp")
+FILE(GLOB_RECURSE SP_SRCS "${PROJECT_SOURCE_DIR}/src/PositionSender/ScreenPosition/*.cpp")
+IF (${COMPILER} STREQUAL "gcc")
+    FILE(GLOB_RECURSE PLT_SRCS "${PROJECT_SOURCE_DIR}/src/PositionSender/Platform/Linux/*.cpp")
+ELSE()
+    FILE(GLOB_RECURSE PLT_SRCS "${PROJECT_SOURCE_DIR}/src/PositionSender/Platform/QNX/*.cpp")
+ENDIF() 
+SET(PS_SRCS
+    ${MS_SRCS}
+    ${SP_SRCS}
+    ${PLT_SRCS})
 #***********************************************
 # add source files 
 #**********************************************
