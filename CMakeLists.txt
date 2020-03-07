@@ -42,7 +42,8 @@ MESSAGE(STATUS "QCC_NTOARCH:${QCC_NTOARCH}")
 #************************************************
 # for gcc
 #************************************************
-IF (${COMPILOR} EQUAL "gcc")
+IF (${COMPILER} STREQUAL "gcc")
+    MESSAGE(STATUS "Compiler IF ${COMPILER}")
     SET(CMAKE_C_COMPILER "gcc")
     SET(CMAKE_C_COMPILER_TARGET "${ARCH}")
     SET(CMAKE_CXX_COMPILER "g++")
@@ -52,6 +53,7 @@ IF (${COMPILOR} EQUAL "gcc")
 # for qcc
 #***********************************************
 ELSE()
+    MESSAGE(STATUS "Compiler ELSE ${COMPILER}")
     SET(CMAKE_C_COMPILER "${QNX_HOST}/usr/bin/qcc")
     SET(CMAKE_C_COMPILER_TARGET "${ARCH}")
     SET(CMAKE_CXX_COMPILER "${QNX_HOST}/usr/bin/qcc")
