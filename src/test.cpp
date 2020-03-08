@@ -4,7 +4,8 @@
 #include "positionSender.h"
 #include <string>
 #include <thread>
-#include "lMessageListener.h"
+//#include "lMessageListener.h"
+#include "qMessageListener.h"
 #include "messageManager.h"
 #define BOOST_TEST_INCLUDE
 #define BOOST_TEST_MODULE demo
@@ -61,7 +62,7 @@ BOOST_AUTO_TEST_CASE(fixture_demo0, * fixture(boost::bind(&AddFixture::openConfi
                                     * label("sendtest")) {
     BOOST_TEST_MESSAGE("Running ReadTest");
     PositionSender ps;
-    std::shared_ptr<MessageListener> mListener = std::make_shared<lMessageListener>();
+    std::shared_ptr<MessageListener> mListener = std::make_shared<qMessageListener>();
     BOOST_ASSERT_MSG(mListener->connect(), "failed to establish connection");
     MessageManager::getInstance().requestListener(mListener);
     while (!aFixture->inputfile.eof()) {

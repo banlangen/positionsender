@@ -1,7 +1,7 @@
 #ifndef _Q_MESSAGE_LISTENER
 #define _Q_MESSAGE_LISTENER
 #include "messageListener.h"
-#include "msgInfo.h"
+#include "qMsgInfo.h"
 
 class qMessageListener : public MessageListener {
 public:

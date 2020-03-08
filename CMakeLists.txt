@@ -94,6 +94,7 @@ SET(QCAR_INC_BS "${PROJECT_SOURCE_DIR}/include")
 SET(QCAR_INC_SND_FILE "${PROJECT_SOURCE_DIR}/include/ScreenPosition/PositionSender")
 SET(QCAR_INC_MSG_FILE "${PROJECT_SOURCE_DIR}/include/ScreenPosition/Message")
 SET(QCAR_INC_REV_FILE "${PROJECT_SOURCE_DIR}/include/ScreenPosition/PositionReceiver")
+SET(QCAR_INC_QUEUE_FILE "${PROJECT_SOURCE_DIR}/include/ScreenPosition/PositionReceiver/queue")
 IF (${COMPILER} STREQUAL "gcc")
     SET(QCAR_INC_PLT_FILE "${PROJECT_SOURCE_DIR}/include/ScreenPosition/Platform/Linux")
 ELSE()
@@ -104,6 +105,7 @@ SET(BOOST_INC_PATH "/home/wm/code/boost-libs/include")
 SET(QCAR_INCLUDE_PATH
     ${QCAR_INC_SND_FILE}
     ${QCAR_INC_BS}
+    ${QCAR_INC_QUEUE_FILE}
     ${QCAR_INC_MSG_FILE}
     ${QCAR_INC_REV_FILE}
     ${QCAR_INC_PLT_FILE}

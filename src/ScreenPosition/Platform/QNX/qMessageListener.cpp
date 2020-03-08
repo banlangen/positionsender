@@ -1,5 +1,6 @@
 #include "qMessageListener.h"
 #include "msgInfo.h"
+#include "qMsgInfo.h"
 #include <sys/iofunc.h>
 #include <sys/dispatch.h>
 #include <sys/neutrino.h>
@@ -10,9 +11,14 @@
 
 bool qMessageListener::sendMessage(MessageInfo &m_info) {
     //MessageManager::getInstance();
+    QMessageInfo smsg;
+    smsg.msg_content.screen_event = m_info.screen_event;
+    smsg.msg_content.touch_id = m_info.touch_id;
+    smsg.msg_content.x = m_info.x;
+    smsg.msg_content.y = m_info.y;
     int tryCount = 0;
     while (tryCount < 3) {
-        int ret = MsgSend(m_tpChID, &m_info, sizeof(MessageInfo), NULL, 0); 
+        int ret = MsgSend(m_tpChID, &smsg, sizeof(QMessageInfo), NULL, 0); 
         if (ret == -1) {
             printf("Error during MsgSend\n");
             tryCount++;
