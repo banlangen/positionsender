@@ -4,7 +4,7 @@
 #include "boost/lexical_cast.hpp"
 #include "boost/algorithm/string.hpp"
 #include "boost/assign.hpp"
-#include "screenPosition.h"
+#include "positionSender.h"
 #include "messageManager.h"
 #include "boost/tokenizer.hpp"
 #include "boost/typeof/typeof.hpp"
@@ -12,21 +12,25 @@
 
 using namespace boost;
 
-void ScreenPosition::record(int type, int tid, float a, float b) {
+void PositionSender::record(int type, int tid, float a, float b) {
     eventType = type;
     touchId = tid;
     x = a;
     y = b;
 }
-int ScreenPosition::getSleepTimeSpan() {
+int PositionSender::getSleepTimeSpan() {
     return timeSpan;
 }
 
-void ScreenPosition::createMessage() {
+void PositionSender::createMessage() {
     MessageManager::getInstance().createMessage(eventType, touchId, x, y);
 }
 
-std::ofstream& operator<<(std::ofstream &os, const ScreenPosition &dump) {
+bool PositionSender::isEmpty() {
+    return isEmptyStr;
+}
+
+std::ofstream& operator<<(std::ofstream &os, const PositionSender &dump) {
     static std::chrono::steady_clock::time_point pr = std::chrono::steady_clock::now();
     static bool isEntry = true;
     std::vector<std::string> v;
@@ -50,10 +54,14 @@ std::ofstream& operator<<(std::ofstream &os, const ScreenPosition &dump) {
     return os;
 }
 
-std::ifstream& operator>>(std::ifstream &ifs, ScreenPosition &sposition) {
+
+std::ifstream& operator>>(std::ifstream &ifs, PositionSender &sposition) {
     std::string str;
     ifs >> str;
-    if (str.empty()) return ifs;
+    if (str.empty()) {
+        sposition.isEmptyStr = true;
+        return ifs;
+    }
     //tmp.c_str returns a const char *, steps below create a char * and copy values;
     //char *cstr = new char [tmp.length() + 1]; 
     //std::strcpy(cstr, tmp.c_str());
@@ -72,5 +80,6 @@ std::ifstream& operator>>(std::ifstream &ifs, ScreenPosition &sposition) {
     sposition.touchId = static_cast<int>(value[2]);
     sposition.x = value[3];
     sposition.y = value[4];
+    sposition.isEmptyStr = false;
     return ifs;
 }

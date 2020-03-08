@@ -80,9 +80,9 @@ MESSAGE(STATUS "CMAKE_CXX_FLAGS:${CMAKE_CXX_FLAGS}")
 # add QTestDemo project include and link directories
 #************************************************
 
-PROJECT(QTestDemo)
-SET(TARGET_NAME demo)
-SET(TARGET_SO_NAME positionsender)
+PROJECT(screenposition)
+SET(TARGET_NAME TestApp)
+SET(TARGET_SO_NAME screenposition)
 
 MESSAGE(STATUS "PROJECT_NAME:${PROJECT_NAME}")
 MESSAGE(STATUS "TARGET_NAME:${TARGET_NAME}")
@@ -91,19 +91,21 @@ MESSAGE(STATUS "PROJECT_SOURCE_DIR:${PROJECT_SOURCE_DIR}")
 MESSAGE(STATUS "PROJECT_BINARY_DIR:${PROJECT_BINARY_DIR}")
 
 SET(QCAR_INC_BS "${PROJECT_SOURCE_DIR}/include")
-SET(QCAR_INC_DUMP_FILE "${PROJECT_SOURCE_DIR}/include/PositionSender/ScreenPosition")
-SET(QCAR_INC_MSG_FILE "${PROJECT_SOURCE_DIR}/include/PositionSender/Message")
+SET(QCAR_INC_SND_FILE "${PROJECT_SOURCE_DIR}/include/ScreenPosition/PositionSender")
+SET(QCAR_INC_MSG_FILE "${PROJECT_SOURCE_DIR}/include/ScreenPosition/Message")
+SET(QCAR_INC_REV_FILE "${PROJECT_SOURCE_DIR}/include/ScreenPosition/PositionReceiver")
 IF (${COMPILER} STREQUAL "gcc")
-    SET(QCAR_INC_PLT_FILE "${PROJECT_SOURCE_DIR}/include/PositionSender/Platform/Linux")
+    SET(QCAR_INC_PLT_FILE "${PROJECT_SOURCE_DIR}/include/ScreenPosition/Platform/Linux")
 ELSE()
-    SET(QCAR_INC_PLT_FILE "${PROJECT_SOURCE_DIR}/include/PositionSender/Platform/QNX")
+    SET(QCAR_INC_PLT_FILE "${PROJECT_SOURCE_DIR}/include/ScreenPosition/Platform/QNX")
 ENDIF()
 #SET(QCAR_INC_BUSI ${PROJECT_SOURCE_DIR}/include/mybusi)
 SET(BOOST_INC_PATH "/home/wm/code/boost-libs/include")
 SET(QCAR_INCLUDE_PATH
-    ${QCAR_INC_DUMP_FILE}
+    ${QCAR_INC_SND_FILE}
     ${QCAR_INC_BS}
     ${QCAR_INC_MSG_FILE}
+    ${QCAR_INC_REV_FILE}
     ${QCAR_INC_PLT_FILE}
     ${BOOST_INC_PATH})
 MESSAGE(STATUS "QCAR_INCLUDE_PATH: ${QCAR_INCLUDE_PATH}")
@@ -120,16 +122,18 @@ INCLUDE_DIRECTORIES(${QCAR_INCLUDE_PATH} ${QNX_HOST_INCLUDE} ${QNX_TARGET_INCLUD
 
 # used for shared so
 #AUX_SOURCE_DIRECTORY(${PROJCT_SOURCE_DIR}/src/ScreenPosition DUMP_SRCS)
-FILE(GLOB_RECURSE MS_SRCS "${PROJECT_SOURCE_DIR}/src/PositionSender/Message/*.cpp")
-FILE(GLOB_RECURSE SP_SRCS "${PROJECT_SOURCE_DIR}/src/PositionSender/ScreenPosition/*.cpp")
+FILE(GLOB_RECURSE MS_SRCS "${PROJECT_SOURCE_DIR}/src/ScreenPosition/Message/*.cpp")
+FILE(GLOB_RECURSE PS_SRCS "${PROJECT_SOURCE_DIR}/src/ScreenPosition/PositionSender/*.cpp")
+FILE(GLOB_RECURSE PR_SRCS "${PROJECT_SOURCE_DIR}/src/ScreenPosition/PositionReceiver/*.cpp")
 IF (${COMPILER} STREQUAL "gcc")
-    FILE(GLOB_RECURSE PLT_SRCS "${PROJECT_SOURCE_DIR}/src/PositionSender/Platform/Linux/*.cpp")
+    FILE(GLOB_RECURSE PLT_SRCS "${PROJECT_SOURCE_DIR}/src/ScreenPosition/Platform/Linux/*.cpp")
 ELSE()
-    FILE(GLOB_RECURSE PLT_SRCS "${PROJECT_SOURCE_DIR}/src/PositionSender/Platform/QNX/*.cpp")
+    FILE(GLOB_RECURSE PLT_SRCS "${PROJECT_SOURCE_DIR}/src/ScreenPosition/Platform/QNX/*.cpp")
 ENDIF() 
-SET(PS_SRCS
+SET(SP_SRCS
     ${MS_SRCS}
-    ${SP_SRCS}
+    ${PS_SRCS}
+    ${PR_SRCS}
     ${PLT_SRCS})
 #***********************************************
 # add source files 
@@ -159,7 +163,7 @@ MESSAGE(STATUS "FRAME_WORK_LIB:" ${FRAME_WORK_LIB})
 #************************************************
 SET(LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/${PLAT_FORM}/lib/")
 MESSAGE(STATUS "LIBRARY_OUTPUT_PATH " ${LIBRARY_OUTPUT_PATH})
-ADD_LIBRARY(${TARGET_SO_NAME} SHARED ${PS_SRCS})
+ADD_LIBRARY(${TARGET_SO_NAME} SHARED ${SP_SRCS})
 #for code coverage
 #target_compile_options(${TARGET_SO_NAME} PRIVATE -Wall -g -std=c++11 -fprofile -ftest-coverage -fPIC -D_GLIBCXX_USE_CXX11_ABI=0 -U__STRICT_ANSI__ -lang-c++)
 target_compile_options(${TARGET_SO_NAME} PRIVATE -Wall -g -std=c++11 -fPIC -D_GLIBCXX_USE_CXX11_ABI=0 -U__STRICT_ANSI__ -lang-c++)
@@ -178,5 +182,5 @@ TARGET_LINK_LIBRARIES(${TARGET_NAME} -Wl,--start-group ${PROJECT_SUB_DIR_LIBS} $
 #************************************************
 # headers out put
 #************************************************
-FILE(GLOB DUMP_DIR "${PROJECT_SOURCE_DIR}/include/ScreenPosition/*.h")
+FILE(GLOB DUMP_DIR "${PROJECT_SOURCE_DIR}/include/ScreenPosition/PositionSender/*.h")
 FILE(COPY ${DUMP_DIR} DESTINATION "${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}")

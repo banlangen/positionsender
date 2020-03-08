@@ -2,7 +2,7 @@
 #include <iostream>
 
 bool MessageListener::connect() {
-    std::cout << "MessageListener::attach()" << std::endl;
+    std::cout << "MessageListener::connect()" << std::endl;
     return true;
 }
 
@@ -12,6 +12,6 @@ bool MessageListener::sendMessage(MessageInfo &m_info) {
 }
 
 bool MessageListener::getConnectionStatus() {
-    std::cout << "MessageListener::getAttachStatus" << std::endl;
+    std::cout << "MessageListener::getConnectionStatus" << std::endl;
     return true;
 }

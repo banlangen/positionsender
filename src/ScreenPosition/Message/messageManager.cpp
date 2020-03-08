@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "messageManager.h"
 
 void MessageManager::createMessage(int s_event, int touch_id, float x, float y) {
@@ -14,7 +15,9 @@ void MessageManager::requestListener(std::shared_ptr<MessageListener> &mListener
 
 bool MessageManager::sendMessage() {
     if (!m_listener->getConnectionStatus()) {
-        m_listener->connect();
+        //m_listener->connect();
+        printf("please establish the connection beforehand\n");
+        return false;
     }
     return m_listener->sendMessage(m_info);
 }
