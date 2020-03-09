@@ -184,5 +184,7 @@ TARGET_LINK_LIBRARIES(${TARGET_NAME} -Wl,--start-group ${PROJECT_SUB_DIR_LIBS} $
 #************************************************
 # headers out put
 #************************************************
-FILE(GLOB DUMP_DIR "${PROJECT_SOURCE_DIR}/include/ScreenPosition/PositionSender/*.h")
-FILE(COPY ${DUMP_DIR} DESTINATION "${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}")
+FILE(GLOB SEND_DIR "${PROJECT_SOURCE_DIR}/include/ScreenPosition/PositionSender/*.h")
+FILE(COPY ${SEND_DIR} DESTINATION "${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}/PositionSender")
+FILE(GLOB RECV_DIR "${PROJECT_SOURCE_DIR}/include/ScreenPosition/PositionReceiver/*h")
+FILE(COPY ${RECV_DIR} DESTINATION "${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}/PositionReceiver")
