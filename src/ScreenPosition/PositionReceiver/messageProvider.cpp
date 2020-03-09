@@ -78,6 +78,7 @@ void *MessageProvider::msg_rcv_thread_loop(void *arg) {
             m_info->x = rmsg.msg_content.x;
             m_info->y = rmsg.msg_content.y;            
             q_queue_enq(&g_message_queue, m_info);
+            MsgReply(rcvid, EOK, 0, 0);
         } else if (0 == rcvid) {
             printf("pulse msg received!\n");
         } else { // == -1
