@@ -36,6 +36,7 @@ bool qMessageListener::sendMessage(MessageInfo &m_info) {
 }
 
 bool qMessageListener::getConnectionStatus() {
+    printf("qMessageListener::getConnectionStatus()\n");
     return m_isConnected;
 }
 

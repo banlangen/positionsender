@@ -186,6 +186,9 @@ TARGET_LINK_LIBRARIES(${TARGET_NAME} -Wl,--start-group ${PROJECT_SUB_DIR_LIBS} $
 #************************************************
 FILE(GLOB SEND_DIR "${PROJECT_SOURCE_DIR}/include/ScreenPosition/PositionSender/*.h")
 FILE(COPY ${SEND_DIR} DESTINATION "${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}/PositionSender")
+FILE(COPY "${PROJECT_SOURCE_DIR}/include/ScreenPosition/Platform/QNX/qMessageListener.h" DESTINATION "${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}/PositionSender")
+FILE(COPY "${PROJECT_SOURCE_DIR}/include/ScreenPosition/Message/messageListener.h" DESTINATION "${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}/PositionSender")
+FILE(COPY "${PROJECT_SOURCE_DIR}/include/ScreenPosition/Message/messageManager.h" DESTINATION "${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}/PositionSender")
 FILE(GLOB RECV_DIR "${PROJECT_SOURCE_DIR}/include/ScreenPosition/PositionReceiver/*h")
 FILE(COPY ${RECV_DIR} DESTINATION "${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}/PositionReceiver")
 FILE(COPY "${PROJECT_SOURCE_DIR}/include/ScreenPosition/Message/msgInfo.h" DESTINATION "${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}/PositionReceiver")

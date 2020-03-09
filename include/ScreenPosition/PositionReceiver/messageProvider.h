@@ -8,7 +8,7 @@ public:
     MessageProvider();
     ~MessageProvider();
     bool prepare(); 
-    bool getMessage(MessageInfo *);
+    bool getMessage(MessageInfo **);
 private:
     static void *msg_rcv_thread_loop(void *arg);
     //static name_attach_t *attach;

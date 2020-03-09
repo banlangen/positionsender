@@ -42,13 +42,11 @@ bool MessageProvider::prepare() {
     return true;
 }
 
-bool MessageProvider::getMessage(MessageInfo *m_info) {
-    MessageInfo *tmp = NULL;
-    tmp = (MessageInfo *)q_queue_deq(&g_message_queue);
-    if (tmp == NULL) {
+bool MessageProvider::getMessage(MessageInfo **m_info) {
+    *m_info = (MessageInfo *)q_queue_deq(&g_message_queue);
+    if (*m_info == NULL) {
         return false;
     } else {
-        m_info = tmp;
         return true;
     }
 }
@@ -58,6 +56,7 @@ void *MessageProvider::msg_rcv_thread_loop(void *arg) {
         printf("start screen position MsgReceive..\n");
         QMessageInfo rmsg;
         int rcvid = MsgReceive(attach->chid, &rmsg, sizeof(QMessageInfo), NULL);
+        printf("msg received, rcvid = %d\n", rcvid);
         if (rcvid > 0) {
             /*name_open() sends a connect message, must respond with EOK*/
             if (rmsg.msg_header.type == _IO_CONNECT) {
@@ -71,6 +70,7 @@ void *MessageProvider::msg_rcv_thread_loop(void *arg) {
                 continue;
             }
             /* handle received message */
+            printf("handling message\n");
             MessageInfo *m_info = new MessageInfo();
             memset(m_info, 0, sizeof(MessageInfo));
             m_info->screen_event = rmsg.msg_content.screen_event;

@@ -11,7 +11,7 @@ bool MessageListener::sendMessage(MessageInfo &m_info) {
     return true;
 }
 
-bool MessageListener::getConnectionStatus() {
+/*bool MessageListener::getConnectionStatus() {
     std::cout << "MessageListener::getConnectionStatus" << std::endl;
     return true;
-}
+}*/

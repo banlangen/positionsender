@@ -6,7 +6,7 @@ class MessageListener {
 public:
     virtual bool connect();
     virtual bool sendMessage(MessageInfo &);
-    bool getConnectionStatus();
+    virtual bool getConnectionStatus() = 0;
 protected:
     bool m_isConnected = false;
 };
