@@ -2,17 +2,34 @@
 #include <sys/iofunc.h>
 #include <sys/dispatch.h>
 #include <stdio.h>
+#include <memory>
 #include <pthread.h>
 #include <string.h>
 #include "qMsgInfo.h"
+#include "q_semaphore.h"
+#include "q_queue.h"
 
 #define ATTACH_POINT_TOUCH "avm_touch_position"
 
-name_attach_t *MessageProvider::attach = name_attach(NULL, ATTACH_POINT_TOUCH, 0);
+std::shared_ptr<name_attach_t> MessageProvider::attach = std::shared_ptr<name_attach_t>(name_attach(NULL, ATTACH_POINT_TOUCH, 0));
+
+static q_semaphore_t g_message_sem;
+static q_queue_t g_message_queue;
+
+MessageProvider::MessageProvider() {
+    q_sem_init(&g_message_sem, 0);
+    q_queue_init(&g_message_queue);
+}
+
+MessageProvider::~MessageProvider() {
+    q_sem_destroy(&g_message_sem);
+    q_queue_deinit(&g_message_queue);
+}
+
 
 bool MessageProvider::prepare() {
     //create channel
-    //attach = name_attach(NULL, ATTACH_POINT_TOUCH, 0);
+    //attach = std::shared_ptr<name_attach_t>(name_attach(NULL, ATTACH_POINT_TOUCH, 0));
     if (NULL == attach) {
         printf("name_attach error!\n");
         return false;
@@ -25,8 +42,15 @@ bool MessageProvider::prepare() {
     return true;
 }
 
-bool MessageProvider::getMessage(MessageInfo &m_info) {
-    return true;
+bool MessageProvider::getMessage(MessageInfo *m_info) {
+    MessageInfo *tmp = NULL;
+    tmp = (MessageInfo *)q_queue_deq(&g_message_queue);
+    if (tmp == NULL) {
+        return false;
+    } else {
+        m_info = tmp;
+        return true;
+    }
 }
 
 void *MessageProvider::msg_rcv_thread_loop(void *arg) {
@@ -47,7 +71,13 @@ void *MessageProvider::msg_rcv_thread_loop(void *arg) {
                 continue;
             }
             /* handle received message */
-            
+            MessageInfo *m_info = new MessageInfo();
+            memset(m_info, 0, sizeof(MessageInfo));
+            m_info->screen_event = rmsg.msg_content.screen_event;
+            m_info->touch_id = rmsg.msg_content.touch_id;
+            m_info->x = rmsg.msg_content.x;
+            m_info->y = rmsg.msg_content.y;            
+            q_queue_enq(&g_message_queue, m_info);
         } else if (0 == rcvid) {
             printf("pulse msg received!\n");
         } else { // == -1
