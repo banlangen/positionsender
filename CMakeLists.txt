@@ -188,3 +188,5 @@ FILE(GLOB SEND_DIR "${PROJECT_SOURCE_DIR}/include/ScreenPosition/PositionSender/
 FILE(COPY ${SEND_DIR} DESTINATION "${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}/PositionSender")
 FILE(GLOB RECV_DIR "${PROJECT_SOURCE_DIR}/include/ScreenPosition/PositionReceiver/*h")
 FILE(COPY ${RECV_DIR} DESTINATION "${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}/PositionReceiver")
+FILE(COPY "${PROJECT_SOURCE_DIR}/include/ScreenPosition/Message/msgInfo.h" DESTINATION "${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}/PositionReceiver")
+FILE(COPY "${PROJECT_SOURCE_DIR}/include/ScreenPosition/Platform/QNX/qMsgInfo.h" DESTINATION "${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}/PositionReceiver")
