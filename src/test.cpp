@@ -62,7 +62,7 @@ BOOST_AUTO_TEST_CASE(fixture_demo0, * fixture(boost::bind(&AddFixture::openConfi
                                     * label("sendtest")) {
     BOOST_TEST_MESSAGE("Running ReadTest");
     PositionSender ps;
-    std::shared_ptr<qMessageListener> mListener = std::make_shared<qMessageListener>();
+    std::shared_ptr<MessageListener> mListener = std::make_shared<qMessageListener>();
     BOOST_ASSERT_MSG(mListener->connect(), "failed to establish connection");
     MessageManager::getInstance().requestListener(mListener);
     while (!aFixture->inputfile.eof()) {

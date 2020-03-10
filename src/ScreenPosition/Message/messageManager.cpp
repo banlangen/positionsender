@@ -9,7 +9,7 @@ MessageInfo& MessageManager::getMessage() {
     return m_info;
 }
 
-void MessageManager::requestListener(std::shared_ptr<qMessageListener> &mListener) {
+void MessageManager::requestListener(std::shared_ptr<MessageListener> &mListener) {
     m_listener = mListener;
 }
 
